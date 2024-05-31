@@ -130,52 +130,56 @@
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
-      <div class="row">
-        <div class="col-lg-8">
-          <div class="row">
-          </div><!-- End Page Title -->
-        </div><!-- End Left side columns -->
-
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">To Do List:</h5>
-
-              <!-- Add new task button -->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                Add new task
-              </button>
-
-              <table class="table datatable">
-                <thead>
-                  <tr>
-                    <th>Task Description</th>
-                    <th data-type="date" data-format="DD/MM/YYYY">Date</th>
-                    <th data-type="time">Start Time</th> 
-                    <th data-type="time">End Time</th> 
-                    <th>Priority</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Buy New Clothes today</td>
-                    <td>20/06/2024</td>
-                    <td>11:30 AM</td>
-                    <td>02:30 PM</td>
-                    <td>Low Priority</td>
-                    <td>Not Started</td>
-                  </tr>
-                  <tr>
-                    <td>Complete my Front End Code</td>
-                    <td>31/05/2024</td>
-                    <td>09:00 AM</td>
-                    <td>06:00 PM</td>
-                    <td>High Priority</td>
-                    <td>Work in Progress</td>
-                  </tr>
-                </tbody>
-              </table><!-- End Table with stripped rows -->
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="row">
+            </div><!-- End Page Title -->
+          </div><!-- End Left side columns -->
+  
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">To Do List:</h5>
+  
+                <!-- Add new task button -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                  Add new task
+                </button>
+  
+                <div class="table-responsive">
+                  <table class="table datatable">
+                    <thead>
+                      <tr>
+                        <th>Task Description</th>
+                        <th data-type="date" data-format="DD/MM/YYYY">Date</th>
+                        <th data-type="time">Start Time</th> 
+                        <th data-type="time">End Time</th> 
+                        <th>Priority</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Buy New Clothes today</td>
+                        <td>20/06/2024</td>
+                        <td>11:30 AM</td>
+                        <td>02:30 PM</td>
+                        <td>Low Priority</td>
+                        <td>Not Started</td>
+                      </tr>
+                      <tr>
+                        <td>Complete my Front End Code</td>
+                        <td>31/05/2024</td>
+                        <td>09:00 AM</td>
+                        <td>06:00 PM</td>
+                        <td>High Priority</td>
+                        <td>Work in Progress</td>
+                      </tr>
+                    </tbody>
+                  </table><!-- End Table with stripped rows -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
