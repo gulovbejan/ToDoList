@@ -200,7 +200,8 @@ h6 {
 }
 
 .btn-primary {
-  background-color: #0D6EFD;
+  background-color: #f6f9ff;
+  color: #4154f1;
 }
 
 .card-title span {
@@ -602,12 +603,13 @@ h6 {
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: #fff;
+  background: #4154f1;
+
 }
 
 .sidebar-nav .nav-link:hover i {
-  color: #4154f1;
+  color: #fff;
 }
 
 .sidebar-nav .nav-link .bi-chevron-down {
