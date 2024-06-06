@@ -162,22 +162,16 @@
                       </tr>
                     </thead>
                     <tbody>
+                    <?php foreach (DataAccess::getAllList() as $todolist): ?>
                     <tr>
-                        <td>Buy New Clothes today</td>
-                        <td>20/06/2024</td>
-                        <td>11:30 AM</td>
-                        <td>02:30 PM</td>
-                        <td>Low Priority</td>
-                        <td>Not Started</td>
+                        <td><?= htmlspecialchars($todolist->task) ?></td>
+                        <td><?= htmlspecialchars($todolist->date) ?></td>
+                        <td><?= htmlspecialchars($todolist->start_time) ?></td>
+                        <td><?= htmlspecialchars($todolist->end_time) ?></td>
+                        <td><?= htmlspecialchars($todolist->priority) ?></td>
+                        <td><?= htmlspecialchars($todolist->status) ?></td>
                       </tr>
-                      <tr>
-                        <td>Complete my Front End Code</td>
-                        <td>31/05/2024</td>
-                        <td>09:00 AM</td>
-                        <td>06:00 PM</td>
-                        <td>High Priority</td>
-                        <td>Work in Progress</td>
-                      </tr>
+                      <?php endforeach; ?>
                     </tbody>
                   </table><!-- End Table with stripped rows -->
                 </div>

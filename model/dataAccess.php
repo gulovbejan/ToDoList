@@ -10,6 +10,14 @@ class DataAccess
         return ConnectDb::getInstance()->getConnection();
     }
 
+    public static function getAllList() 
+    {
+        $pdo = self::getPdoConnection();
+        $statement = $pdo->prepare("SELECT * FROM list");
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_CLASS, "toDoList");
+    }
+
     public static function loginAccess($username, $password) 
     {
         $pdo = self::getPdoConnection();
@@ -18,11 +26,4 @@ class DataAccess
         return $statement->fetchAll(PDO::FETCH_CLASS, "Account");
     }
 
-    public static function getToDoList($username, $password) 
-    {
-        $pdo = self::getPdoConnection();
-        $statement = $pdo->prepare("SELECT * FROM account WHERE username = ? AND password = ?");
-        $statement->execute([$username, $password]);
-        return $statement->fetchAll(PDO::FETCH_CLASS, "Account");
-    }
 }

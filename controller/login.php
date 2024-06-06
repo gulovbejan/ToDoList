@@ -29,16 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 if ($isLoggedIn): ?>
     <!-- Success message -->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <p><b>Login successful. Redirecting...<b></p>
     <meta http-equiv="refresh" content="2;url=../view/index_view.php" />
 <?php else: ?>
     <!-- Login form -->
     <!doctype html>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <section id="apply">
     <title>Login</title>
-    <form action="../controller/login.php" method="post">
+    <form action="login.php" method="post">
         <label for="username">User Name:</label>
         <input type="text" id="username" name="username" required/>
 
