@@ -1,3 +1,8 @@
+<?php
+
+require_once "../model/todolist.php";
+require_once "../model/dataAccess.php";
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -130,6 +135,9 @@
       </nav>
     </div><!-- End Page Title -->
 
+  
+
+
     <section class="section dashboard">
       <div class="container-fluid">
         <div class="row">
@@ -143,11 +151,16 @@
               <div class="card-body">
                 <h5 class="card-title">To Do List:</h5>
   
-                <!-- Add new task button -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                  Add new task
-                </button>
-            
+            <!-- Add new task button -->
+       
+              <form action="../controller/main.php" method="post">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                Add new task
+              </button>
+              </form>
+    
+              
+        
   
                 <div class="table-responsive">
                   <table class="table datatable">
@@ -159,6 +172,8 @@
                         <th data-type="time">End Time</th> 
                         <th>Priority</th>
                         <th>Status</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -170,7 +185,23 @@
                         <td><?= htmlspecialchars($todolist->end_time) ?></td>
                         <td><?= htmlspecialchars($todolist->priority) ?></td>
                         <td><?= htmlspecialchars($todolist->status) ?></td>
+                        <td ><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+                        <i class="bi bi-pencil-square"></i></button></td>
+                        <td>
+                          <form action="../controller/main.php" method="post">
+                            <input type="hidden" name="task" value="<?= htmlspecialchars($todolist->task) ?>">
+                            <input type="hidden" name="date" value="<?= htmlspecialchars($todolist->date) ?>">
+                            <input type="hidden" name="start_time" value="<?= htmlspecialchars($todolist->start_time) ?>">
+                            <input type="hidden" name="end_time" value="<?= htmlspecialchars($todolist->end_time) ?>">
+                            <input type="hidden" name="priority" value="<?= htmlspecialchars($todolist->priority) ?>">
+                            <input type="hidden" name="status" value="<?= htmlspecialchars($todolist->status) ?>">
+                            <button type="submit" class="btn btn-primary" name="delete_task">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          </form>
+                        </td>
                       </tr>
+                      
                       <?php endforeach; ?>
                     </tbody>
                   </table><!-- End Table with stripped rows -->
@@ -182,7 +213,10 @@
       </div>
     </section><!-- End Section -->
 
-    <!-- Modal structure -->
+
+
+
+    <!-- ADD Modal structure --> 
     <div class="modal fade" id="addTaskModal" tabindex="-1" data-bs-backdrop="false">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -192,35 +226,89 @@
           </div>
           <div class="modal-body">
             <!-- Form to add new task -->
-            <form id="addTaskForm">
+            <form id="addTaskForm" action="../controller/main.php" method="post">
               <div class="mb-3">
-                <label for="taskDescription" class="form-label">Task Description</label>
-                <input type="text" class="form-control" id="taskDescription" placeholder="Enter task description" required>
+                <label for="task" class="form-label">Task Description</label>
+                <input type="text" class="form-control" id="task" name="task" placeholder="Enter task description" required>
               </div>
               <div class="mb-3">
-                <label for="taskDate" class="form-label">Date</label>
-                <input type="datetime-local" class="form-control" id="taskDate" required>
+                <label for="date" class="form-label">Date</label>
+                <input type="text" class="form-control" id="date" name="date" required>
               </div>
               <div class="mb-3">
-                <label for="taskStartTime" class="form-label">Start Time</label>
-                <input type="time" class="form-control" id="taskStartTime" required>
+                <label for="start_time" class="form-label">Start Time</label>
+                <input type="text" class="form-control" id="start_time" name="start_time" required>
               </div>
               <div class="mb-3">
-                <label for="taskEndTime" class="form-label">End Time</label>
-                <input type="time" class="form-control" id="taskEndTime" required>
+                <label for="end_time" class="form-label">End Time</label>
+                <input type="text" class="form-control" id="end_time" name="end_time" required>
               </div>
               
               <div class="mb-3">
-                <label for="taskPriority" class="form-label">Priority</label>
-                <select class="form-select" id="taskPriority" required>
+                <label for="priority" class="form-label">Priority</label>
+                <select class="form-select" id="priority" name="priority" required>
                   <option value="Low-Priority">Low Priority</option>
                   <option value="Normal-Priority">Normal Priority</option>
                   <option value="High-Priority">High Priority</option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="taskStatus" class="form-label">Status</label>
-                <select class="form-select" id="taskStatus" required>
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status" required>
+                  <option value="Not Started">Not Started</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" form="addTaskForm">Save Task</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div><!-- End ADD Modal -->
+
+     <!-- EDIT Modal structure --> 
+     <div class="modal fade" id="editModal" tabindex="-1" data-bs-backdrop="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Task</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Form to edit current task -->
+            <form id="editModal">
+              <div class="mb-3">
+                <label for="task" class="form-label">Task Description</label>
+                <input type="text" class="form-control" id="task" name="task" placeholder="Enter task description" required>
+              </div>
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="text" class="form-control" id="date" name="date" required>
+              </div>
+              <div class="mb-3">
+                <label for="start_time" class="form-label">Start Time</label>
+                <input type="text" class="form-control" id="start_time" name="start_time" required>
+              </div>
+              <div class="mb-3">
+                <label for="end_time" class="form-label">End Time</label>
+                <input type="text" class="form-control" id="end_time" name="end_time" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="priority" class="form-label">Priority</label>
+                <select class="form-select" id="priority" name="priority" required>
+                  <option value="Low-Priority">Low Priority</option>
+                  <option value="Normal-Priority">Normal Priority</option>
+                  <option value="High-Priority">High Priority</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status" required>
                   <option value="Not Started">Not Started</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Completed">Completed</option>
@@ -234,7 +322,8 @@
           </div>
         </div>
       </div>
-    </div><!-- End Modal -->
+    </div><!-- End  EDIT Modal -->
+
 
   </main><!-- End Main -->
 

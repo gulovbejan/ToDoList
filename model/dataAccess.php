@@ -26,4 +26,18 @@ class DataAccess
         return $statement->fetchAll(PDO::FETCH_CLASS, "Account");
     }
 
+    public static function addNewTask($addTask) 
+    {
+        $pdo = self::getPdoConnection();
+        $statement = $pdo->prepare("INSERT INTO list (task, date, start_time, end_time, priority, status) VALUES (?, ?, ?, ?, ?, ?)");
+        $statement->execute([$addTask->task, $addTask->date, $addTask->start_time, $addTask->end_time, $addTask->priority, $addTask->status]);
+    }
+
+    public static function deleteTask($task, $date, $start_time, $end_time, $priority, $status) {
+        $pdo = self::getPdoConnection();
+        $statement = $pdo->prepare("DELETE FROM list WHERE task = ? AND date = ? AND start_time = ? AND end_time = ? AND priority = ? AND status = ?");
+        $statement->execute([$task, $date, $start_time, $end_time, $priority, $status]);
+    }
+    
+
 }
