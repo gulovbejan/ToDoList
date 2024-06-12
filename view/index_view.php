@@ -1,5 +1,6 @@
 <?php
 
+require_once "../controller/main.php";
 require_once "../model/todolist.php";
 require_once "../model/dataAccess.php";
 ?>

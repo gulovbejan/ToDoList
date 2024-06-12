@@ -41,7 +41,7 @@ if ($isLoggedIn): ?>
     <link rel="stylesheet" href="../assets/css/style.css">
     <section id="apply">
     <title>Login</title>
-    <form action="login.php" method="post">
+    <form action="main.php" method="post">
         <label for="username">User Name:</label>
         <input type="text" id="username" name="username" required/>
 
