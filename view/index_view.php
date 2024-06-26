@@ -1,6 +1,11 @@
 <?php
-
 require_once "../controller/main.php";
+
+if (!isset($_SESSION['userLogIn'])) {
+  header("Location: ./login_view.php");
+  exit;
+}
+
 require_once "../model/todolist.php";
 require_once "../model/dataAccess.php";
 ?>
@@ -10,7 +15,7 @@ require_once "../model/dataAccess.php";
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Dashboard - To Do List</title> 
+  <title>Dashboard - To Do List</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -53,7 +58,7 @@ require_once "../model/dataAccess.php";
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
             <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
-          </a><!-- End Profile Iamge Icon -->
+          </a><!-- End Profile Image Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
@@ -64,7 +69,7 @@ require_once "../model/dataAccess.php";
               <hr class="dropdown-divider">
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="../controller/logout.php">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -106,17 +111,9 @@ require_once "../model/dataAccess.php";
         </a>
       </li><!-- End Export Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link" href="./login_view.php">
-          <i class="bi-box-arrow-left"></i>
-          <span>Login</span>
-        </a>
-      </li><!-- End Login Nav -->
-      
-
       <div class="sign-out">
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="../controller/logout.php">
           <i class="bi bi-box-arrow-right"></i>
           <span>Sign Out</span>
         </a>
@@ -136,9 +133,6 @@ require_once "../model/dataAccess.php";
       </nav>
     </div><!-- End Page Title -->
 
-  
-
-
     <section class="section dashboard">
       <div class="container-fluid">
         <div class="row">
@@ -151,19 +145,13 @@ require_once "../model/dataAccess.php";
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">To Do List:</h5>
-  
-            <!-- Add new task button -->
-       
-              <form action="../controller/main.php" method="post">
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                Add new task
-              </button>
-              </form>
-    
-              
-        
-  
+                <!-- Add new task button -->
                 <div class="table-responsive">
+                  <form action="../controller/main.php" method="post">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                      Add new task
+                    </button>
+                  </form>
                   <table class="table datatable">
                     <thead>
                       <tr>
@@ -181,28 +169,25 @@ require_once "../model/dataAccess.php";
                     <?php foreach (DataAccess::getAllList() as $todolist): ?>
                     <tr>
                         <td><?= htmlspecialchars($todolist->task) ?></td>
-                        <td><?= htmlspecialchars($todolist->date) ?></td>
-                        <td><?= htmlspecialchars($todolist->start_time) ?></td>
-                        <td><?= htmlspecialchars($todolist->end_time) ?></td>
-                        <td><?= htmlspecialchars($todolist->priority) ?></td>
-                        <td><?= htmlspecialchars($todolist->status) ?></td>
+                        <td><?= (new DateTime($todolist->date))->format('d-m-Y');?></td>
+                        <td><?= (new DateTime($todolist->start_time))->format('H:i'); ?></td>
+                        <td><?= (new DateTime($todolist->end_time))->format('H:i'); ?></td>
+                        <td><?= htmlspecialchars($todolist->priority); ?></td>
+                        <td><?= htmlspecialchars($todolist->status); ?></td>
                         <td ><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
                         <i class="bi bi-pencil-square"></i></button></td>
                         <td>
-                          <form action="../controller/main.php" method="post">
-                            <input type="hidden" name="task" value="<?= htmlspecialchars($todolist->task) ?>">
-                            <input type="hidden" name="date" value="<?= htmlspecialchars($todolist->date) ?>">
-                            <input type="hidden" name="start_time" value="<?= htmlspecialchars($todolist->start_time) ?>">
-                            <input type="hidden" name="end_time" value="<?= htmlspecialchars($todolist->end_time) ?>">
-                            <input type="hidden" name="priority" value="<?= htmlspecialchars($todolist->priority) ?>">
-                            <input type="hidden" name="status" value="<?= htmlspecialchars($todolist->status) ?>">
-                            <button type="submit" class="btn btn-primary" name="delete_task">
+                          <button type="button" class="btn btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                  data-task="<?= htmlspecialchars($todolist->task); ?>"
+                                  data-date="<?= htmlspecialchars($todolist->date); ?>"
+                                  data-start-time="<?= htmlspecialchars($todolist->start_time); ?>"
+                                  data-end-time="<?= htmlspecialchars($todolist->end_time); ?>"
+                                  data-priority="<?= htmlspecialchars($todolist->priority); ?>"
+                                  data-status="<?= htmlspecialchars($todolist->status); ?>">
                               <i class="bi bi-trash"></i>
-                            </button>
-                          </form>
-                        </td>
+                          </button>
+                      </td>
                       </tr>
-                      
                       <?php endforeach; ?>
                     </tbody>
                   </table><!-- End Table with stripped rows -->
@@ -214,11 +199,8 @@ require_once "../model/dataAccess.php";
       </div>
     </section><!-- End Section -->
 
-
-
-
     <!-- ADD Modal structure --> 
-    <div class="modal fade" id="addTaskModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="AddModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -234,15 +216,15 @@ require_once "../model/dataAccess.php";
               </div>
               <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
-                <input type="text" class="form-control" id="date" name="date" required>
+                <input type="date" class="form-control" id="date" name="date" required>
               </div>
               <div class="mb-3">
                 <label for="start_time" class="form-label">Start Time</label>
-                <input type="text" class="form-control" id="start_time" name="start_time" required>
+                <input type="time" class="form-control" id="start_time" name="start_time" required>
               </div>
               <div class="mb-3">
                 <label for="end_time" class="form-label">End Time</label>
-                <input type="text" class="form-control" id="end_time" name="end_time" required>
+                <input type="time" class="form-control" id="end_time" name="end_time" required>
               </div>
               
               <div class="mb-3">
@@ -271,32 +253,33 @@ require_once "../model/dataAccess.php";
       </div>
     </div><!-- End ADD Modal -->
 
-     <!-- EDIT Modal structure --> 
-     <div class="modal fade" id="editModal" tabindex="-1" data-bs-backdrop="false">
+     <!-- EDIT Task structure --> 
+     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add New Task</h5>
+            <h5 class="modal-title" id = "editModalLabel">Edit Task</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <!-- Form to edit current task -->
-            <form id="editModal">
+            <form id="editTaskForm" action="../controller/main.php" method="post">
+              <input type="hidden" id="editTaskId" name="id">
               <div class="mb-3">
                 <label for="task" class="form-label">Task Description</label>
                 <input type="text" class="form-control" id="task" name="task" placeholder="Enter task description" required>
               </div>
               <div class="mb-3">
                 <label for="date" class="form-label">Date</label>
-                <input type="text" class="form-control" id="date" name="date" required>
+                <input type="date" class="form-control" id="date" name="date" required>
               </div>
               <div class="mb-3">
                 <label for="start_time" class="form-label">Start Time</label>
-                <input type="text" class="form-control" id="start_time" name="start_time" required>
+                <input type="time" class="form-control" id="start_time" name="start_time" required>
               </div>
               <div class="mb-3">
                 <label for="end_time" class="form-label">End Time</label>
-                <input type="text" class="form-control" id="end_time" name="end_time" required>
+                <input type="time" class="form-control" id="end_time" name="end_time" required>
               </div>
               
               <div class="mb-3">
@@ -319,12 +302,38 @@ require_once "../model/dataAccess.php";
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" form="addTaskForm">Save Task</button>
+            <button type="submit" class="btn btn-primary" form="addTaskForm">Save Changes</button>
           </div>
         </div>
       </div>
     </div><!-- End  EDIT Modal -->
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this task?
+          </div>
+          <div class="modal-footer">
+            <form id="deleteForm" action="../controller/main.php" method="post">
+            <input type="hidden" name="id" id="deleteTaskId">
+            <input type="hidden" name="start_time" id="deleteStartTime">
+            <input type="hidden" name="end_time" id="deleteEndTime">
+            <input type="hidden" name="priority" id="deletePriority">
+            <input type="hidden" name="status" id="deleteStatus">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger" name="delete_task">Delete</button>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Delete Confirmation Modal -->
 
   </main><!-- End Main -->
 
@@ -344,6 +353,18 @@ require_once "../model/dataAccess.php";
   <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="../assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+  <!-- DataTables Buttons JS -->
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
 
   <!-- Template Main JS File -->
   <script src="../assets/js/main.js"></script>

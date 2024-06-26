@@ -1,6 +1,8 @@
 (function() {
   "use strict";
 
+  console.log("main.js is loaded");
+
   /**
    * Easy selector helper function
    */
@@ -101,6 +103,40 @@
     onscroll(document, toggleBacktotop)
   }
 
+
+  
+
+  // POPULATING THE EDIT MODAL:
+
+  document.querySelectorAll('.edit-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const taskId = this.getAttribute('data-task-id');
+      const task = this.getAttribute('data-task');
+      // Include other attributes as needed
+      document.getElementById('editTaskId').value = taskId;
+      document.getElementById('editTask').value = task;
+      // Set other fields similarly
+    });
+  });
+  
+
+
+  /**
+   * Attach event listeners to delete buttons
+   */
+  document.querySelectorAll('.delete-button').forEach(button => {
+    button.addEventListener('click', function() {
+      console.log('Task ID:', this.getAttribute('data-task-id')); // Check if data attributes are set and retrieved correctly
+      document.getElementById('deleteTaskId').value = this.getAttribute('data-task-id');
+      document.getElementById('deleteTask').value = this.getAttribute('data-task');
+      document.getElementById('deleteDate').value = this.getAttribute('data-date');
+      document.getElementById('deleteStartTime').value = this.getAttribute('data-start-time');
+      document.getElementById('deleteEndTime').value = this.getAttribute('data-end-time');
+      document.getElementById('deletePriority').value = this.getAttribute('data-priority');
+      document.getElementById('deleteStatus').value = this.getAttribute('data-status');
+    });
+  });
+  
   /**
    * Initiate tooltips
    */
@@ -175,7 +211,6 @@
   /**
    * Initiate TinyMCE Editor
    */
-
   const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
 

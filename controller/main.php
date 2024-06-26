@@ -1,73 +1,39 @@
 <?php
+error_reporting(-1);
 require_once "../model/account.php";
 require_once "../model/todolist.php";
 require_once "../model/dataAccess.php";
 
 session_start();
 
-///////////////////////////////----LOGIN
-
-// Initialize variables
-$username = "";
-$password = "";
-$error = "";
-$isLoggedIn = false;
-
 // Check if form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     // Attempt login
     $user = DataAccess::loginAccess($username, $password);
 
     if (!empty($user)) {
         $_SESSION['userLogIn'] = $user[0];
-        $isLoggedIn = true;
+        header("Location: ../view/index_view.php");
+        exit;
     } else {
-        $error = "Invalid username or password";
+        $_SESSION['error'] = "Invalid username or password";
+        header("Location: ../view/login_view.php");
+        exit;
     }
 }
 
-if ($isLoggedIn): ?>
-    <!-- Success message -->
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <p><b>Login successful. Redirecting...<b></p>
-    <meta http-equiv="refresh" content="2;url=../view/index_view.php" />
-<?php else: ?>
-    <!-- Login form -->
-    <!doctype html>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <section id="apply">
-    <title>Login</title>
-    <form action="main.php" method="post">
-        <label for="username">User Name:</label>
-        <input type="text" id="username" name="username" required/>
+// Ensure the user is logged in for the following actions
+if (!isset($_SESSION['userLogIn'])) {
+    header("Location: ../view/login_view.php");
+    exit;
+}
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required/>
-
-        <input type="hidden" name="login" value="1">
-        <input class="btn btn-primary" type="submit" value="Login">
-        </br>
-    </form>
-    </section>
-</body>
-</html>
-<?php if (!empty($error)): ?>
-    <!-- Error message -->
-    <p style="color:red;"><?= htmlspecialchars($error) ?></p>
-<?php endif; ?>
-<?php endif; ?>
-
-<?php
-///////////////////////////////----Adding A new Task
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['delete_task'])) {
-    // Check if all required fields are set
+// Handle adding a new task
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['delete_task']) && isset($_SESSION['userLogIn'])) {
     if (isset($_POST["task"]) && isset($_POST["date"]) && isset($_POST["start_time"]) && isset($_POST["end_time"]) && isset($_POST["priority"]) && isset($_POST["status"])) {
-        // Create a new toDoList object and set its properties
         $addNewTask = new toDoList();
         $addNewTask->task = $_POST["task"];
         $addNewTask->date = $_POST["date"];
@@ -76,26 +42,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['delete_task'])) {
         $addNewTask->priority = $_POST["priority"];
         $addNewTask->status = $_POST["status"];
 
-        // Add the new task to the database
         DataAccess::addNewTask($addNewTask);
 
-        // Redirect back to the main page or display a success message
         header("Location: ../view/index_view.php");
         exit;
     }
 }
 
-///////////////////////////////----Deleting a Task
-
+// Handle deleting a task
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_task'])) {
-    // Check if all required fields are set
-    if (isset($_POST["task"]) && isset($_POST["date"]) && isset($_POST["start_time"]) && isset($_POST["end_time"]) && isset($_POST["priority"]) && isset($_POST["status"])) {
-        // Delete the task from the database
-        DataAccess::deleteTask($_POST["task"], $_POST["date"], $_POST["start_time"], $_POST["end_time"], $_POST["priority"], $_POST["status"]);
+    $requiredFields = ['id', 'task', 'date', 'start_time', 'end_time', 'priority', 'status'];
+    $missingFields = [];
+    
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            $missingFields[] = $field;
+        }
+    }
 
-        // Redirect back to the main page or display a success message
+    if (count($missingFields) == 0) {
+        DataAccess::deleteTask($_POST["id"], $_POST["task"], $_POST["date"], $_POST["start_time"], $_POST["end_time"], $_POST["priority"], $_POST["status"]);
         header("Location: ../view/index_view.php");
         exit;
+    } else {
+        echo "Missing data for: " . implode(', ', $missingFields);
     }
 }
+
+
+
+// Handle editing a Task
+if (isset($_REQUEST["id"]) && isset($_REQUEST["task"]) && isset($_REQUEST["date"]) && isset($_REQUEST["start_time"]) &&
+isset($_REQUEST["end_time"]) && isset($_REQUEST["priority"]) && isset($_REQUEST["status"])) {  
+    $id = $_REQUEST["id"];
+    $task = $_REQUEST["task"];
+    $date = $_REQUEST["date"];
+    $start_time = $_REQUEST["start_time"];
+    $end_time = $_REQUEST["end_time"];
+    $priority = $_REQUEST["priority"];
+    $status = $_REQUEST["status"];
+
+    $edit->id = $id;
+    $edit->task = $task;
+    $edit->date = $date;
+    $edit->start_time = $start_time;
+    $edit->end_time = $end_time;
+    $edit->priority = $priority;
+    $edit->status = $status;
+    
+    DataAccess::editTask($edit);
+
+    header("Location: ../view/index_view.php");
+    exit;
+}
+
 ?>

@@ -20,6 +20,3 @@ class toDoList
     $this->$name = $value;
   }
 }
-
-
-

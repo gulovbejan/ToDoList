@@ -1,3 +1,14 @@
+<?php
+
+require_once "../controller/main.php";
+
+if (!isset($_SESSION['userLogIn'])) {
+  header("Location: ./login_view.php");
+  exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +86,7 @@
               <hr class="dropdown-divider">
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="../controller/logout.php">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
               </a>
@@ -116,14 +127,6 @@
           <span>Export</span>
         </a>
       </li><!-- End Export Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link" href="./login_view.php">
-          <i class="bi-box-arrow-left"></i>
-          <span>Login</span>
-        </a>
-      </li><!-- End Login Nav -->
-
 
       <div class="sign-out">
         <li class="nav-item">
