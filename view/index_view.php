@@ -174,21 +174,77 @@ require_once "../model/dataAccess.php";
                         <td><?= (new DateTime($todolist->end_time))->format('H:i'); ?></td>
                         <td><?= htmlspecialchars($todolist->priority); ?></td>
                         <td><?= htmlspecialchars($todolist->status); ?></td>
-                        <td ><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
-                        <i class="bi bi-pencil-square"></i></button></td>
                         <td>
-                          <button type="button" class="btn btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                  data-task="<?= htmlspecialchars($todolist->task); ?>"
-                                  data-date="<?= htmlspecialchars($todolist->date); ?>"
-                                  data-start-time="<?= htmlspecialchars($todolist->start_time); ?>"
-                                  data-end-time="<?= htmlspecialchars($todolist->end_time); ?>"
-                                  data-priority="<?= htmlspecialchars($todolist->priority); ?>"
-                                  data-status="<?= htmlspecialchars($todolist->status); ?>">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= $todolist->id ?>">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+
+                            <!-- Edit Modal -->
+                            <div class="modal fade" id="editModal<?= $todolist->id ?>" tabindex="-1" aria-labelledby="editModalLabel<?= $todolist->id ?>" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel<?= $todolist->id ?>">Edit Task</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form id="editTaskForm<?= $todolist->id ?>" action="../controller/edit.php" method="post">
+                                      <input type="hidden" name="id" value="<?= $todolist->id ?>">
+                                      <div class="mb-3">
+                                        <label for="task" class="form-label">Task Description</label>
+                                        <input type="text" class="form-control" id="task" name="task" value="<?= htmlspecialchars($todolist->task) ?>" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="date" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="date" name="date" value="<?= $todolist->date ?>" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="start_time" class="form-label">Start Time</label>
+                                        <input type="time" class="form-control" id="start_time" name="start_time" value="<?= $todolist->start_time ?>" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="end_time" class="form-label">End Time</label>
+                                        <input type="time" class="form-control" id="end_time" name="end_time" value="<?= $todolist->end_time ?>" required>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="priority" class="form-label">Priority</label>
+                                        <select class="form-select" id="priority" name="priority" required>
+                                          <option value="Low-Priority" <?= $todolist->priority == "Low-Priority" ? 'selected' : '' ?>>Low Priority</option>
+                                          <option value="Normal-Priority" <?= $todolist->priority == "Normal-Priority" ? 'selected' : '' ?>>Normal Priority</option>
+                                          <option value="High-Priority" <?= $todolist->priority == "High-Priority" ? 'selected' : '' ?>>High Priority</option>
+                                        </select>
+                                      </div>
+                                      <div class="mb-3">
+                                        <label for="status" class="form-label">Status</label>
+                                        <select class="form-select" id="status" name="status" required>
+                                          <option value="Not Started" <?= $todolist->status == "Not Started" ? 'selected' : '' ?>>Not Started</option>
+                                          <option value="In Progress" <?= $todolist->status == "In Progress" ? 'selected' : '' ?>>In Progress</option>
+                                          <option value="Completed" <?= $todolist->status == "Completed" ? 'selected' : '' ?>>Completed</option>
+                                        </select>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div><!-- End Edit Modal -->
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary delete-task-btn" 
+                                    data-task="<?= htmlspecialchars($todolist->task) ?>" 
+                                    data-date="<?= htmlspecialchars($todolist->date) ?>"
+                                    data-start-time="<?= htmlspecialchars($todolist->start_time) ?>"
+                                    data-end-time="<?= htmlspecialchars($todolist->end_time) ?>"
+                                    data-priority="<?= htmlspecialchars($todolist->priority) ?>"
+                                    data-status="<?= htmlspecialchars($todolist->status) ?>">
                               <i class="bi bi-trash"></i>
-                          </button>
-                      </td>
-                      </tr>
-                      <?php endforeach; ?>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                     </tbody>
                   </table><!-- End Table with stripped rows -->
                 </div>
@@ -253,87 +309,34 @@ require_once "../model/dataAccess.php";
       </div>
     </div><!-- End ADD Modal -->
 
-     <!-- EDIT Task structure --> 
-     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id = "editModalLabel">Edit Task</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <!-- Form to edit current task -->
-            <form id="editTaskForm" action="../controller/main.php" method="post">
-              <input type="hidden" id="editTaskId" name="id">
-              <div class="mb-3">
-                <label for="task" class="form-label">Task Description</label>
-                <input type="text" class="form-control" id="task" name="task" placeholder="Enter task description" required>
-              </div>
-              <div class="mb-3">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="date" name="date" required>
-              </div>
-              <div class="mb-3">
-                <label for="start_time" class="form-label">Start Time</label>
-                <input type="time" class="form-control" id="start_time" name="start_time" required>
-              </div>
-              <div class="mb-3">
-                <label for="end_time" class="form-label">End Time</label>
-                <input type="time" class="form-control" id="end_time" name="end_time" required>
-              </div>
-              
-              <div class="mb-3">
-                <label for="priority" class="form-label">Priority</label>
-                <select class="form-select" id="priority" name="priority" required>
-                  <option value="Low-Priority">Low Priority</option>
-                  <option value="Normal-Priority">Normal Priority</option>
-                  <option value="High-Priority">High Priority</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" name="status" required>
-                  <option value="Not Started">Not Started</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" form="addTaskForm">Save Changes</button>
-          </div>
-        </div>
-      </div>
-    </div><!-- End  EDIT Modal -->
-
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+            <h5 class="modal-title" id="deleteConfirmationModalLabel">Delete Confirmation</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             Are you sure you want to delete this task?
           </div>
           <div class="modal-footer">
-            <form id="deleteForm" action="../controller/main.php" method="post">
-            <input type="hidden" name="id" id="deleteTaskId">
-            <input type="hidden" name="start_time" id="deleteStartTime">
-            <input type="hidden" name="end_time" id="deleteEndTime">
-            <input type="hidden" name="priority" id="deletePriority">
-            <input type="hidden" name="status" id="deleteStatus">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-danger" name="delete_task">Delete</button>
-          </form>
+            <form id="deleteTaskForm" action="../controller/main.php" method="post">
+              <input type="hidden" name="task" id="deleteTask">
+              <input type="hidden" name="date" id="deleteDate">
+              <input type="hidden" name="start_time" id="deleteStartTime">
+              <input type="hidden" name="end_time" id="deleteEndTime">
+              <input type="hidden" name="priority" id="deletePriority">
+              <input type="hidden" name="status" id="deleteStatus">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-danger" name="delete_task">Delete</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
-    <!-- End Delete Confirmation Modal -->
+
+
 
   </main><!-- End Main -->
 

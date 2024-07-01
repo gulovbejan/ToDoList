@@ -15,6 +15,37 @@
     }
   }
 
+
+// DELETE FUNCTION 
+document.addEventListener('DOMContentLoaded', function () {
+  const deleteButtons = document.querySelectorAll('.delete-task-btn');
+  
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const task = this.getAttribute('data-task');
+      const date = this.getAttribute('data-date');
+      const startTime = this.getAttribute('data-start-time');
+      const endTime = this.getAttribute('data-end-time');
+      const priority = this.getAttribute('data-priority');
+      const status = this.getAttribute('data-status');
+      
+      document.getElementById('deleteTask').value = task;
+      document.getElementById('deleteDate').value = date;
+      document.getElementById('deleteStartTime').value = startTime;
+      document.getElementById('deleteEndTime').value = endTime;
+      document.getElementById('deletePriority').value = priority;
+      document.getElementById('deleteStatus').value = status;
+
+      const deleteConfirmationModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+      deleteConfirmationModal.show();
+    });
+  });
+});
+
+  
+  // END OF DELETE FUNCTION
+
+
   /**
    * Easy event listener function
    */
@@ -121,21 +152,6 @@
   
 
 
-  /**
-   * Attach event listeners to delete buttons
-   */
-  document.querySelectorAll('.delete-button').forEach(button => {
-    button.addEventListener('click', function() {
-      console.log('Task ID:', this.getAttribute('data-task-id')); // Check if data attributes are set and retrieved correctly
-      document.getElementById('deleteTaskId').value = this.getAttribute('data-task-id');
-      document.getElementById('deleteTask').value = this.getAttribute('data-task');
-      document.getElementById('deleteDate').value = this.getAttribute('data-date');
-      document.getElementById('deleteStartTime').value = this.getAttribute('data-start-time');
-      document.getElementById('deleteEndTime').value = this.getAttribute('data-end-time');
-      document.getElementById('deletePriority').value = this.getAttribute('data-priority');
-      document.getElementById('deleteStatus').value = this.getAttribute('data-status');
-    });
-  });
   
   /**
    * Initiate tooltips

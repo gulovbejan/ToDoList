@@ -50,50 +50,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['delete_task']) && iss
 }
 
 // Handle deleting a task
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_task'])) {
-    $requiredFields = ['id', 'task', 'date', 'start_time', 'end_time', 'priority', 'status'];
-    $missingFields = [];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_task'])) {
+    $task = $_POST['task'];
+    $date = $_POST['date'];
+    $start_time = $_POST['start_time'];
+    $end_time = $_POST['end_time'];
+    $priority = $_POST['priority'];
+    $status = $_POST['status'];
+  
+    // Call your data access method to delete the task
+    DataAccess::deleteTask($task, $date, $start_time, $end_time, $priority, $status);
     
-    foreach ($requiredFields as $field) {
-        if (empty($_POST[$field])) {
-            $missingFields[] = $field;
-        }
-    }
-
-    if (count($missingFields) == 0) {
-        DataAccess::deleteTask($_POST["id"], $_POST["task"], $_POST["date"], $_POST["start_time"], $_POST["end_time"], $_POST["priority"], $_POST["status"]);
-        header("Location: ../view/index_view.php");
-        exit;
-    } else {
-        echo "Missing data for: " . implode(', ', $missingFields);
-    }
-}
-
-
-
-// Handle editing a Task
-if (isset($_REQUEST["id"]) && isset($_REQUEST["task"]) && isset($_REQUEST["date"]) && isset($_REQUEST["start_time"]) &&
-isset($_REQUEST["end_time"]) && isset($_REQUEST["priority"]) && isset($_REQUEST["status"])) {  
-    $id = $_REQUEST["id"];
-    $task = $_REQUEST["task"];
-    $date = $_REQUEST["date"];
-    $start_time = $_REQUEST["start_time"];
-    $end_time = $_REQUEST["end_time"];
-    $priority = $_REQUEST["priority"];
-    $status = $_REQUEST["status"];
-
-    $edit->id = $id;
-    $edit->task = $task;
-    $edit->date = $date;
-    $edit->start_time = $start_time;
-    $edit->end_time = $end_time;
-    $edit->priority = $priority;
-    $edit->status = $status;
-    
-    DataAccess::editTask($edit);
-
     header("Location: ../view/index_view.php");
     exit;
-}
+  }
+  
 
 ?>

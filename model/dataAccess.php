@@ -33,17 +33,17 @@ class DataAccess
         $statement->execute([$addTask->task, $addTask->date, $addTask->start_time, $addTask->end_time, $addTask->priority, $addTask->status]);
     }
 
-    public static function deleteTask($id, $task, $date, $start_time, $end_time, $priority, $status) {
+    public static function deleteTask($task, $date, $start_time, $end_time, $priority, $status) {
         $pdo = self::getPdoConnection();
-        $statement = $pdo->prepare("DELETE FROM list WHERE id = ?  task = ? AND date = ? AND start_time = ? AND end_time = ? AND priority = ? AND status = ?");
-        $statement->execute([$id, $task, $date, $start_time, $end_time, $priority, $status]);
+        $statement = $pdo->prepare("DELETE FROM list WHERE task = ? AND date = ? AND start_time = ? AND end_time = ? AND priority = ? AND status = ?");
+        $statement->execute([$task, $date, $start_time, $end_time, $priority, $status]);
     }
     
-    public static function editTask($task) 
+    public static function editTask($edit) 
     {
         $pdo = self::getPdoConnection();
         $statement = $pdo->prepare("UPDATE list SET task = ?, date = ?, start_time = ?, end_time = ?, priority = ?, status = ? WHERE id = ?");
-        $statement->execute([$task->task, $task->date, $task->start_time, $task->end_time, $task->priority, $task->status, $task->id]);
+        $statement->execute([$edit->task, $edit->date, $edit->start_time, $edit->end_time, $edit->priority, $edit->status, $edit->id]);
     }
 
 }
